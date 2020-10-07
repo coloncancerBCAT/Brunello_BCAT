@@ -50,7 +50,7 @@ brunello <- brunello_rawread %>%
             DLD1_axin_2nd_HiGFP = DLD1_axin_2nd_HiGFP/sum(.$DLD1_axin_2nd_HiGFP)*1000000,
             RKO_myc_1st_HiGFP =  RKO_myc_1st_HiGFP/sum(.$RKO_myc_1st_HiGFP)*1000000,
             RKO_myc_2nd_HiGFP =  RKO_myc_2nd_HiGFP/sum(.$RKO_myc_2nd_HiGFP)*1000000
-            ) %>% 
+  ) %>% 
   transmute(Symbol = Symbol,
             DLD1_Axin2 = (DLD1_axin_1st_LowGFP + DLD1_axin_2nd_LowGFP)/(DLD1_axin_1st_DAY7 + DLD1_axin_2nd_DAY7),
             DLD1_TOPGC = (TOPGC_1st_LowGFP + TOPGC_2nd_LowGFP)/(TOPGC_1st_DAY7 + TOPGC_2nd_DAY7),
@@ -62,7 +62,7 @@ brunello <- brunello_rawread %>%
             RKO_MYC_HighGFP = (RKO_myc_1st_HiGFP + RKO_myc_2nd_HiGFP)/(RKO_1st_Day7 + RKO_2nd_Day7),
             DLD1_proliferation_FC = (DLD1_cmyc1st_Day21 + DLD1_cmyc2nd_Day21)/Brunelo_plasmid * 0.5,
             RKO_proliferaiton_FC = (RKO_1st_Day21 + RKO_2nd_Day21)/Brunelo_plasmid * 0.5
-            ) %>% 
+  ) %>% 
   drop_na()
 
 #median of LFC for all sgRNAs per gene
@@ -83,18 +83,18 @@ brunello1 <- brunello %>%
   group_by(Symbol) %>% 
   ##calculate median log2(Fold_change) per gene
   transmute(TOPGC_median_FC = median(TOPGC_FC),
-         AXIN2_median_FC = median(AXIN2_FC),
-         MYC_median_FC = median(MYC_FC),
-         RKO_median_FC = median(RKO_FC),
-         TOPGC_median_highFC = median(TOPGC_highFC),
-         AXIN2_median_highFC = median(AXIN2_highFC),
-         MYC_median_highFC = median(MYC_highFC),
-         RKO_median_highFC = median(RKO_highFC),
-         DLD1_median_Proliferation = median(DLD1_Proliferation),
-         RKO_median_proliferation = median(RKO_proliferation)
-         ) %>% 
+            AXIN2_median_FC = median(AXIN2_FC),
+            MYC_median_FC = median(MYC_FC),
+            RKO_median_FC = median(RKO_FC),
+            TOPGC_median_highFC = median(TOPGC_highFC),
+            AXIN2_median_highFC = median(AXIN2_highFC),
+            MYC_median_highFC = median(MYC_highFC),
+            RKO_median_highFC = median(RKO_highFC),
+            DLD1_median_Proliferation = median(DLD1_Proliferation),
+            RKO_median_proliferation = median(RKO_proliferation)
+  ) %>% 
   unique(.) %>% 
-##calculate Zscore for every gene
+  ##calculate Zscore for every gene
   transmute(
     TOPGC_Zscore = (TOPGC_median_FC - mean(.$TOPGC_median_FC))/sd(.$TOPGC_median_FC),
     AXIN2_Zscore = (AXIN2_median_FC - mean(.$AXIN2_median_FC))/sd(.$AXIN2_median_FC),
@@ -127,7 +127,7 @@ Brunello_mageck1  <- brunello1 %>%
 
 ##make plots
 #TOPGC plot
-ggplot()+
+Fig1D <- ggplot()+
   geom_point(data = Brunello_mageck1,
              aes(x = TOPGC_Zscore, y = TOPGC_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck1, 
@@ -141,16 +141,16 @@ ggplot()+
                   nudge_y = 0.1,
                   segment.color = NA,
                   segment.size = 0
-                  )+
+  )+
   theme_classic()+
   theme(legend.position = "none", axis.text=element_text(size=12))+
   ylim(0,5.5)+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave(filename = "Figure 1D.pdf", width = 4.05, height = 3.6)
+ggsave(Fig1D, filename = "Figure 1D.pdf", width = 4.05, height = 3.6)
 
 #MYC plot
-ggplot()+
+Fig2C <- ggplot()+
   geom_point(data = Brunello_mageck1,
              aes(x = MYC_Zscore, y = MYC_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck1, 
@@ -170,10 +170,10 @@ ggplot()+
   ylim(0,5.5)+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure 2C.pdf", width = 4.05, height = 3.6)
+ggsave(Fig2C, "Figure 2C.pdf", width = 4.05, height = 3.6)
 
 #Axin2 plot
-ggplot()+
+Fig2D <- ggplot()+
   geom_point(data = Brunello_mageck1,
              aes(x = AXIN2_Zscore, y = AXIN2_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck1, 
@@ -194,10 +194,10 @@ ggplot()+
   ylim(0,5.5)+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure 2D.pdf", width = 4.05, height = 3.6)
+ggsave(Fig2D, "Figure 2D.pdf", width = 4.05, height = 3.6)
 
 #RKO plot
-ggplot()+
+Fig2E <- ggplot()+
   geom_point(data = Brunello_mageck1,
              aes(x = RKO_Zscore, y = RKO_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck1, 
@@ -217,21 +217,21 @@ ggplot()+
   ylim(0,5.5)+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure 2E.pdf", width = 4.05, height = 3.6)
+ggsave(Fig2E, "Figure 2E.pdf", width = 4.05, height = 3.6)
 
 ###highGFP plot
 
 Brunello_mageck_highGFP <- Enrichment_highGFP_list %>%
   #define indifinte value as 5
   transmute(Symbol = Symbol,
-         TOPGC_pscore = ifelse(is.finite(-log10(DLD1_TOPGC_high_pvalue)),
-                               -log10(DLD1_TOPGC_high_pvalue),5),
-         AXIN2_pscore = ifelse(is.finite(-log10(DLD1_AXIN2_high_pvalue)),
-                               -log10(DLD1_AXIN2_high_pvalue),5),
-         MYC_pscore = ifelse(is.finite(-log10(DLD1_MYC_high_pvalue)),
-                             -log10(DLD1_MYC_high_pvalue),5),
-         RKO_pscore = ifelse(is.finite(-log10(RKO_MYC_high_pvalue)),
-                             -log10(RKO_MYC_high_pvalue),5)
+            TOPGC_pscore = ifelse(is.finite(-log10(DLD1_TOPGC_high_pvalue)),
+                                  -log10(DLD1_TOPGC_high_pvalue),5),
+            AXIN2_pscore = ifelse(is.finite(-log10(DLD1_AXIN2_high_pvalue)),
+                                  -log10(DLD1_AXIN2_high_pvalue),5),
+            MYC_pscore = ifelse(is.finite(-log10(DLD1_MYC_high_pvalue)),
+                                -log10(DLD1_MYC_high_pvalue),5),
+            RKO_pscore = ifelse(is.finite(-log10(RKO_MYC_high_pvalue)),
+                                -log10(RKO_MYC_high_pvalue),5)
   ) %>% 
   inner_join(brunello1, by = "Symbol") %>% 
   mutate(TOPGC = ifelse(TOPGC_highZscore >= 0, "T","N"),
@@ -240,7 +240,7 @@ Brunello_mageck_highGFP <- Enrichment_highGFP_list %>%
          RKO = ifelse(RKO_highZscore >= 0, "T", "N"))  
 
 #TOPGC-highGFP plot
-ggplot()+
+FigS1B <- ggplot()+
   geom_point(data = Brunello_mageck_highGFP,
              aes(x = TOPGC_highZscore, y = TOPGC_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck_highGFP, 
@@ -259,7 +259,7 @@ ggplot()+
   ylim(0,5.5)+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure S1B.pdf", width = 4.05, height = 3.6)
+ggsave(FigS1B, "Figure S1B.pdf", width = 4.05, height = 3.6)
 
 
 ##make proliferation plots
@@ -267,17 +267,17 @@ str(brunello_proliferation)
 
 Brunello_mageck_Proliferation <- brunello_proliferation %>% 
   transmute(Symbol= Symbol,
-         DLD1_pscore = ifelse(is.finite(-log10(DLD1_Proliferation_pvalue)),
-                               -log10(DLD1_Proliferation_pvalue),5),
-         RKO_pscore = ifelse(is.finite(-log10(RKO_Proliferation_pvalue)),
-                               -log10(RKO_Proliferation_pvalue),5)
+            DLD1_pscore = ifelse(is.finite(-log10(DLD1_Proliferation_pvalue)),
+                                 -log10(DLD1_Proliferation_pvalue),5),
+            RKO_pscore = ifelse(is.finite(-log10(RKO_Proliferation_pvalue)),
+                                -log10(RKO_Proliferation_pvalue),5)
   ) %>% 
   inner_join(brunello1, by = "Symbol") %>% 
   mutate(DLD1 = ifelse(DLD1_Proliferation_Zscore >= 0, "T", "N"),
          RKO = ifelse(RKO_Proliferation_Zscore >= 0, "T", "N")) 
 
 #DLD1 Proliferation
-ggplot()+
+FigS1E <- ggplot()+
   geom_point(data = Brunello_mageck_Proliferation,
              aes(x = DLD1_Proliferation_Zscore, y = DLD1_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck_Proliferation, 
@@ -297,10 +297,10 @@ ggplot()+
   geom_hline(yintercept=-log10(0.05), linetype="dashed", color = "red")+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure S1E.pdf")
+ggsave(FigS1E, "Figure S1E.pdf")
 
 #RKO Proliferation
-ggplot()+
+FigS2A <- ggplot()+
   geom_point(data = Brunello_mageck_Proliferation,
              aes(x = RKO_Proliferation_Zscore, y = RKO_pscore),color = "grey",size = 1)+
   geom_point(data = subset(Brunello_mageck_Proliferation, 
@@ -320,7 +320,7 @@ ggplot()+
   geom_hline(yintercept=-log10(0.05), linetype="dashed", color = "red")+
   xlab("Z-score")+ylab("-log10(P-value)")
 
-ggsave("Figure S2A.pdf")
+ggsave(FigS2A, "Figure S2A.pdf")
 
 
 dev.off()
